@@ -1,5 +1,5 @@
 -- CREATE DATABASE --
-CREATE DATABASE task_management_system;
+CREATE DATABASE knowledgebase;
 
 -- CREATE TABLE OF user_mst
 CREATE TABLE `user_mst` (
