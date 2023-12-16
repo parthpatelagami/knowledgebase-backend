@@ -10,8 +10,6 @@ async function getAllCategory(req, res) {
 
     // Execute the SQL query
     DBConfig.query(sql, (err, results) => {
-      console.log(results);
-
       if (err) {
         console.error("Error:", err);
         res.status(500).json({
@@ -66,15 +64,15 @@ async function createCategory(req, res) {
 // Edit Category
 async function editCategory(req, res) {
   try {
-    const { category_id, name, description, status, created_date, created_by } =
+    const { category_id, name, description, status, updated_date, updated_by } =
       req.body;
     const category = new CategoryUpdate(
       category_id,
       name,
       description,
       status,
-      created_date,
-      created_by
+      updated_date,
+      updated_by
     );
     const result = await category.update();
 

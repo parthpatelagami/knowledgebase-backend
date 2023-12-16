@@ -6,15 +6,15 @@ class CategoryUpdate {
     name,
     description,
     status,
-    created_date,
-    created_by
+    updated_date,
+    updated_by
   ) {
     this.category_id = category_id;
     this.name = name;
     this.description = description;
     this.status = status;
-    this.created_date = created_date;
-    this.created_by = created_by;
+    this.updated_date = updated_date;
+    this.updated_by = updated_by;
   }
 
   update() {
@@ -22,8 +22,11 @@ class CategoryUpdate {
       const sql = "UPDATE category_mst SET ? WHERE category_id = ?";
       const categoryData = {
         name: this.name,
+        description: this.description,
+        status: this.status,
+        updated_date: this.updated_date,
+        updated_by: this.updated_by,
       };
-      console.log("DATA ", categoryData);
       const categoryId = this.category_id;
 
       DBConfig.query(sql, [categoryData, categoryId], (err, results) => {
