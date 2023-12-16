@@ -9,6 +9,7 @@ class Article {
         Updated_by,
         Updated_date,
         Content,
+        Status,
         DBConfig
     ) {
         this.Name = Name
@@ -19,6 +20,7 @@ class Article {
         this.Updated_by = Updated_by
         this.Updated_date = Updated_date
         this.Content=Content
+        this.Status=Status
         this.DBConfig=DBConfig
     }
 
@@ -33,6 +35,7 @@ class Article {
                 Created_date : this.Created_date,
                 Updated_by : this.Updated_by,
                 Updated_date : this.Updated_date,
+                Status:this.Status,
                 Content:this.Content
             }
 

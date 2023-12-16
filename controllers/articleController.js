@@ -7,7 +7,11 @@ require('dotenv').config()
 async function getArticle(req,res){
 
     try{
-        const sql = `SELECT * from article`;
+        var sql = `SELECT ar.*,cm.name as category_name from article ar INNER join category_mst cm ON ar.Category_id=cm.category_id`;
+        const id=req.params.id;
+        if(id!=undefined){
+            sql+= ` where ID=`+id
+        }
         DBConfig.query(sql, (err, results) => {
             console.log(results)
 
@@ -48,10 +52,11 @@ async function CreateArticle(req,res){
             Updated_date,
             Content,
             Attachments,
-            Article_UUID
+            Article_UUID,
+            Status
             } = req.body
             DBConfig.beginTransaction()
-            const article = new Article(Name, Category_id, SubCategory_id, Created_by, Created_date, Updated_by, Updated_date, Content,DBConfig);
+            const article = new Article(Name, Category_id, SubCategory_id, Created_by, Created_date, Updated_by, Updated_date, Content,Status,DBConfig);
             const result = await article.insert()
             const id=result.insertId;
             const attaachmetresult=await addAttachment(id,Attachments,Article_UUID,Created_date,DBConfig)
@@ -90,5 +95,29 @@ async function addAttachment(id,attachments,Article_UUID,Created_date,DBConfig){
     }
 }
 
+async function deleteArticle(req,res){
+    try{
+        let sql=`UPDATE knowledgebase.article SET STATUS=0 WHERE ID=`+req.params.id;
+        DBConfig.query(sql, (err, results) => {
+            if (err) {
+                console.error('Error:', err)
+                res.status(500).json({
+                    success: false,
+                    message: 'Oops! Something Went Wrong.',
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: 'Article Deleted Sucessfully',
+                    articles: results
+                })
+            }
+        });
 
-module.exports={getArticle,CreateArticle}
+    }catch(err){
+
+    }
+}
+
+
+module.exports={getArticle,CreateArticle,deleteArticle}
