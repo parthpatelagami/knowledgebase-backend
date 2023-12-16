@@ -13,6 +13,7 @@ const userRoutes = require('./routes/userRoutes')
 const teamRoutes = require('./routes/teamRoutes')
 const roleRoutes = require('./routes/roleRoutes')
 const taskRoutes = require('./routes/taskRoutes')
+const articleRoutes = require('./routes/articleRoutes')
 
 // REST OBJECT
 const app = express()
@@ -42,6 +43,8 @@ app.use("/api/v1/team", teamRoutes)
 app.use("/api/v1/role", roleRoutes)
 // Task Routes
 app.use("/api/v1/task", taskRoutes)
+
+app.use("/api/v1/article",articleRoutes)
 
 // Check api
 app.get('/', (req, res) => {
