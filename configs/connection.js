@@ -3,9 +3,9 @@ const colors = require("colors")
 
 const DBConfig = mysql.createConnection({
     host: "localhost",
-    user: "helpdesk",
-    password: "Helpdesk@123",
-    database: "knowledgebase"
+    user: "root",
+    password: "Agami@210",
+    database: "task_management_system"
 })
 
 DBConfig.connect((err) => {

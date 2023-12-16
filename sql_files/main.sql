@@ -181,3 +181,94 @@ CREATE TABLE `task_mst` (
     KEY `task_user_id` (`task_user_id`),
     CONSTRAINT `task_mst_ibfk_1` FOREIGN KEY (`task_user_id`) REFERENCES `user_mst` (`user_id`)
 );
+
+CREATE TABLE `subcategory_mst` (
+`subcategory_id` int(11) NOT NULL AUTO_INCREMENT,
+`category_id` int(11) DEFAULT NULL ,
+`subcategory_name` varchar(45) DEFAULT NULL,
+`description` varchar(90) DEFAULT NULL,
+`status` int(11) NOT NULL DEFAULT 0,
+`created_date` date DEFAULT NULL,
+`created_by` varchar(45) DEFAULT NULL,
+`updated_date` date DEFAULT NULL,
+`updated_by` varchar(45) DEFAULT NULL,
+PRIMARY KEY (`subcategory_id`)
+)
+
+INSERT INTO
+`subcategory_mst` (
+`subcategory_id`,
+`subcategory_name`,
+`description`,
+`status`,
+`created_date`,
+`created_by`,
+`updated_by`,
+`updated_date`,
+)
+VALUES
+(
+'1',
+'message',
+'hello',
+'2023-12-16'
+);
+
+INSERT INTO
+`subcategory_mst` (
+`subcategory_id`,
+`subcategory_name`,
+`description`,
+`status`,
+`created_date`,
+`created_by`,
+`updated_by`,
+`updated_date`
+)
+VALUES
+(
+'1',
+'message',
+'hello',
+0, 
+'2023-12-16',
+'meet', 
+'meet', 
+'2023-12-16' 
+);
+
+ CREATE TABLE `category_mst` (
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  `description` varchar(90) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `created_date` date DEFAULT NULL,
+  `created_by` varchar(45) DEFAULT NULL,
+  `updated_date` date DEFAULT NULL,
+  `updated_by` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (category_id)
+)
+
+
+INSERT INTO
+`category_mst` (
+    `category_id`,
+`name`,
+`description`,
+`status`,
+`created_date`,
+`created_by`,
+`updated_by`,
+`updated_date`
+)
+VALUES
+(
+'1',
+'message',
+'hello',
+0, 
+'2023-12-16',
+'meet', 
+'meet', 
+'2023-12-16' 
+);
