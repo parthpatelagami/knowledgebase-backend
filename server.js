@@ -34,7 +34,7 @@ app.use(
   })
 );
 app.use(express.json());
-
+app.use(express.static(__dirname + '/public'));
 // Login Routes
 app.use("/api/v1/auth", authRoutes);
 // User Routes
