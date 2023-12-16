@@ -6,9 +6,8 @@ async function getAllCategory(req, res) {
   try {
     const {} = req.body;
 
-    const sql = `SELECT * FROM category_mst`;
+    const sql = `SELECT * FROM category_mst ORDER BY name`;
 
-    // Execute the SQL query
     DBConfig.query(sql, (err, results) => {
       if (err) {
         console.error("Error:", err);
@@ -127,11 +126,13 @@ async function deleteCategory(req, res) {
 
 // Example function to check Category existence in the database
 async function checkCategory(req, res) {
-  const { name } = req.body;
-
-  const sql = "SELECT * FROM category_mst WHERE name = ?";
-
-  DBConfig.query(sql, [name], (err, results) => {
+  const name = req.body.category.name;
+  const id = req.body.category.id;
+  var sql = "SELECT * FROM category_mst WHERE name = ? ";
+  if (id) {
+    sql += "AND category_id NOT IN (?)";
+  }
+  DBConfig.query(sql, [name, id], (err, results) => {
     if (err) {
       console.error("Error:", err);
       res.status(500).json({
