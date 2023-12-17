@@ -90,10 +90,10 @@ async function editCategory(req, res) {
 // Delete Category
 async function deleteCategory(req, res) {
   try {
-    const { category_id } = req.body;
+    const { id } = req.body;
     const sql = "UPDATE category_mst SET status = 0 WHERE category_id IN (?)";
 
-    DBConfig.query(sql, [category_id], (err, results) => {
+    DBConfig.query(sql, [id], (err, results) => {
       if (err) {
         console.error("Error updating category:", err);
         return res.status(500).json({
@@ -101,14 +101,12 @@ async function deleteCategory(req, res) {
           message: "Failed to update category",
         });
       }
-
       if (results.affectedRows === 0) {
         return res.status(404).json({
           success: false,
           message: "Category not found",
         });
       }
-
       res.status(200).json({
         success: true,
         message: "Category Deleted successfully",
@@ -125,8 +123,8 @@ async function deleteCategory(req, res) {
 
 // Function to check Category existence in the database
 async function checkCategory(req, res) {
-  const name = req.body.category.name;
-  const id = req.body.category.id;
+  const name = req.body.name;
+  const id = req.body.id;
   var sql = "SELECT * FROM category_mst WHERE name = ? ";
   if (id) {
     sql += "AND category_id NOT IN (?)";
