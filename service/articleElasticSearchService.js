@@ -25,9 +25,9 @@ async function addArticle(articledata) {
   try {
     articleIndexParams["body"] = articledata;
 
-    const { body: response } = await client.index(articleIndexParams);
+    const responsedata = await client.index(articleIndexParams);
 
-    console.log("EL - Document added:", response);
+    console.log("EL - Document added:", responsedata);
   } catch (error) {
     console.error("EL - Error adding document:", error);
   }
