@@ -1,6 +1,7 @@
 
-class Article {
+class ArticleUpdate {
     constructor(
+        ID,
         Name,
         Category_id,
         SubCategory_id,
@@ -9,9 +10,9 @@ class Article {
         Updated_date,
         Content,
         Status,
-        Article_UUID,
         DBConfig
     ) {
+        this.ID=ID
         this.Name = Name
         this.Category_id = Category_id
         this.SubCategory_id = SubCategory_id
@@ -20,36 +21,9 @@ class Article {
         this.Updated_date = Updated_date
         this.Content=Content
         this.Status=Status
-        this.Article_UUID=Article_UUID
         this.DBConfig=DBConfig
     }
 
-    insert() {
-        return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO knowledgebase.article SET ?'
-            const articleData = {
-                Name : this.Name,
-                Category_id : this.Category_id,
-                SubCategory_id : this.SubCategory_id,
-                Created_by : this.Created_by,
-                Updated_by : this.Updated_by,
-                Updated_date : this.Updated_date,
-                Status:this.Status,
-                uuid:this.Article_UUID,
-                Content:this.Content
-            }
-
-            this.DBConfig.query(sql, articleData, (err, results) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                } else {
-                    console.log(results)
-                    resolve(results)
-                }
-            })
-        })
-    }
     update(){
         return new Promise((resolve, reject) => {
             const sql = 'UPDATE knowledgebase.article SET ? WHERE ID = ?'
@@ -64,12 +38,13 @@ class Article {
                 Content:this.Content
             }
 
-            this.DBConfig.query(sql, [articleData,ID], (err, results) => {
+            this.DBConfig.query(sql, [articleData,this.ID], (err, results) => {
                 if (err) {
-                    console.log(err)
+                    console.log(sql);
+                    console.log("SQLLLLLLLLL update error",err)
                     reject(err)
                 } else {
-                    console.log(results)
+                    console.log("SQLLLLLLLLL update result",results)
                     resolve(results)
                 }
             })
@@ -77,4 +52,4 @@ class Article {
     }
 }
 
-module.exports = Article
+module.exports = ArticleUpdate
