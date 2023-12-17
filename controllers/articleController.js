@@ -2,6 +2,7 @@ const DBConfig = require('../configs/connection')
 const Article = require('../models/articleModel')
 const AttachmentsModel=require('../models/attachmentsModel')
 const ArticleUpdate=require('../models/articleUpdateModel')
+const elArticleService=require('../service/articleElasticSearchService')
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 require('dotenv').config()
@@ -63,7 +64,15 @@ async function CreateArticle(req,res){
             if(Attachments.length>0){
                 const attaachmetresult=await addAttachment(id,Attachments,Article_UUID,DBConfig)
             }
+            const elasticSearchJSON={
+                "Content":Content,
+                "id":id,
+                "Name":Name,
+                "Status":parseInt(Status)
+            }
+
             DBConfig.commit();
+            await elArticleService.addArticle(elasticSearchJSON)
             res.status(201).json({
                 success: true,
                 message: 'article created successfully',
