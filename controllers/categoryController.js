@@ -4,11 +4,15 @@ const DBConfig = require("../configs/connection");
 
 async function getAllCategory(req, res) {
   try {
-    const {} = req.body;
+    const { id } = req.body;
 
-    const sql = `SELECT * FROM category_mst ORDER BY name`;
+    var sql = "SELECT * FROM category_mst ";
+    if (id) {
+      sql += "WHERE category_id IN (?) ";
+    }
+    sql += "ORDER BY name";
 
-    DBConfig.query(sql, (err, results) => {
+    DBConfig.query(sql, [id], (err, results) => {
       if (err) {
         console.error("Error:", err);
         res.status(500).json({
