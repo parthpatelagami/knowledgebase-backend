@@ -1,28 +1,32 @@
-const express = require("express")
+const express = require("express");
 const {
   getAllCategory,
   createCategory,
   checkCategory,
   editCategory,
   deleteCategory,
-} = require("../controllers/categoryController")
+  checkCategoryMapping,
+} = require("../controllers/categoryController");
 
 //router object
-const router = express.Router()
+const router = express.Router();
 
-//CREATE NEW USER || POST
-router.post("/add_new_category", createCategory)
+// SELECT || POST - Retrieve list of CATEGORY
+router.post("/get_all_category", getAllCategory);
 
-// SELECT || POST - Retrieve list of users
-router.post("/get_all_category", getAllCategory)
+//CREATE CATEGORY || POST
+router.post("/add_new_category", createCategory);
 
-//CHECK EMAIL || POST
-router.post("/check_category", checkCategory)
+//EDIT CATEGORY || POST
+router.post("/edit_category", editCategory);
 
-//EDIT USER || POST
-router.post("/edit_category", editCategory)
+//DELETE CATEGORY || POST
+router.post("/delete_category", deleteCategory);
 
-//DELETE USER || POST
-router.post("/delete_category", deleteCategory)
+//CHECK CATEGORY || POST
+router.post("/check_category", checkCategory);
 
-module.exports = router
+//CHECK CATEGORY MAPPING || POST
+router.post("/check_category_mapping", checkCategoryMapping);
+
+module.exports = router;

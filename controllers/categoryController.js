@@ -36,7 +36,6 @@ async function createCategory(req, res) {
   try {
     const { category_id, name, description, status, created_date, created_by } =
       req.body;
-
     const category = new Category(
       category_id,
       name,
@@ -92,7 +91,7 @@ async function editCategory(req, res) {
 async function deleteCategory(req, res) {
   try {
     const { category_id } = req.body;
-    const sql = "UPDATE category_mst SET status = 0 WHERE category_id = ?";
+    const sql = "UPDATE category_mst SET status = 0 WHERE category_id IN (?)";
 
     DBConfig.query(sql, [category_id], (err, results) => {
       if (err) {
@@ -124,7 +123,7 @@ async function deleteCategory(req, res) {
   }
 }
 
-// Example function to check Category existence in the database
+// Function to check Category existence in the database
 async function checkCategory(req, res) {
   const name = req.body.category.name;
   const id = req.body.category.id;
@@ -154,10 +153,39 @@ async function checkCategory(req, res) {
     }
   });
 }
+
+// Function to check Category existence in the database
+async function checkCategoryMapping(req, res) {
+  const { id } = req.body;
+  var sql = "SELECT * FROM subcategory_mst WHERE category_id IN (?) ";
+  DBConfig.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("Error:", err);
+      res.status(500).json({
+        success: false,
+        message: "Oops! Something Went Wrong.",
+      });
+    } else {
+      if (results.length > 0) {
+        res.status(200).json({
+          success: true,
+          message: "Mapping Exists.",
+        });
+      } else {
+        res.status(200).json({
+          success: false,
+          message: "Mapping Does Not Exists.",
+        });
+      }
+    }
+  });
+}
+
 module.exports = {
   createCategory,
   getAllCategory,
   checkCategory,
   editCategory,
   deleteCategory,
+  checkCategoryMapping,
 };
