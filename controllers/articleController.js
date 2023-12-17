@@ -119,5 +119,19 @@ async function deleteArticle(req,res){
     }
 }
 
+async function uploadAttachements(req,res) {
+    console.log(req)
+    console.log(req.body)
+    console.log(req.file)
 
-module.exports={getArticle,CreateArticle,deleteArticle}
+    if(req.body!=undefined && req.body!={}) {
+        res.status(200).json({
+            success: true,
+            message: 'Done',
+        })
+    }
+}
+
+
+
+module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements}
