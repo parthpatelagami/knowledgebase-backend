@@ -3,18 +3,16 @@ class AttachmentsModel {
     constructor(
         File_Name,
         Article_id,
-        Created_date,
         DBConfig
     ) {
         this.File_Name = File_Name
         this.Article_id = Article_id
-        this.Created_date = Created_date
         this.DBConfig=DBConfig
     }
 
     insert() {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO knowledgebase.Attachments(File_Name,Article_id,Created_Date) VALUES ?'
+            const sql = 'INSERT INTO knowledgebase.Attachments(File_Name,Article_id) VALUES ?'
             const articleData = 
             this.File_Name.map((filename)=>{
                 console.log("FileNAmesss",filename)
@@ -22,7 +20,6 @@ class AttachmentsModel {
                     [
                          filename,
                          this.Article_id,
-                         this.Created_date
                     ]
                 )
             })

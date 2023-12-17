@@ -47,7 +47,6 @@ async function CreateArticle(req,res){
             Category_id,
             SubCategory_id,
             Created_by,
-            Created_date,
             Updated_by,
             Updated_date,
             Content,
@@ -56,10 +55,10 @@ async function CreateArticle(req,res){
             Status
             } = req.body
             DBConfig.beginTransaction()
-            const article = new Article(Name, Category_id, SubCategory_id, Created_by, Created_date, Updated_by, Updated_date, Content,Status,DBConfig);
+            const article = new Article(Name, Category_id, SubCategory_id, Created_by, Updated_by, Updated_date, Content,Status,DBConfig);
             const result = await article.insert()
             const id=result.insertId;
-            const attaachmetresult=await addAttachment(id,Attachments,Article_UUID,Created_date,DBConfig)
+            const attaachmetresult=await addAttachment(id,Attachments,Article_UUID,DBConfig)
             DBConfig.commit();
             res.status(201).json({
                 success: true,
@@ -77,9 +76,9 @@ async function CreateArticle(req,res){
         })
     }
 }
-async function addAttachment(id,attachments,Article_UUID,Created_date,DBConfig){
+async function addAttachment(id,attachments,Article_UUID,DBConfig){
     try{
-        const attachmentsResults=new AttachmentsModel(attachments,id,Created_date,DBConfig);
+        const attachmentsResults=new AttachmentsModel(attachments,id,DBConfig);
         const result=await attachmentsResults.insert();
         const sourceFile = process.env.FILE_UPLOAD_PATH+"/"+Article_UUID+"/"; // Replace with your actual filename
         const destinationFile = process.env.PUBLIC_FOLDER_PATH+"/attachment_"+id;
