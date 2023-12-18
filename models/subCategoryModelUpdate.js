@@ -1,35 +1,34 @@
 const DBConfig = require('../configs/connection')
 
-class SubCategory {
+class SubCategory_Update {
     constructor(
-        category_id,
+        subcategory_id,
         subcategory_name,
         description,
         status,
-        created_date,
-        created_by,
+        updated_date,
+        updated_by,
     ) {
-        this.category_id = category_id
+        this.subcategory_id = subcategory_id
         this.subcategory_name = subcategory_name
         this.description = description
         this.status = status
-        this.created_date = created_date
-        this.created_by = created_by
+        this.updated_date = updated_date
+        this.updated_by = updated_by
     }
 
-    insertSubCategory() {
+    SubCategoryUpdate() {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO subcategory_mst SET ?'
-            const taskData = {
-                category_id: this.category_id,
+            const sql = 'UPDATE subcategory_mst SET ? WHERE subcategory_id = ?'
+            const SubCategoryData = {
                 subcategory_name: this.subcategory_name,
                 description: this.description,
                 status: this.status,
-                created_date: this.created_date,
-                created_by: this.created_by,
+                updated_date: this.updated_date,
+                updated_by: this.updated_by,
             }
 
-            DBConfig.query(sql, taskData, (err, results) => {
+            DBConfig.query(sql, [SubCategoryData, this.subcategory_id], (err, results) => {
                 if (err) {
                     reject(err)
                 } else {
@@ -40,4 +39,4 @@ class SubCategory {
     }
 }
 
-module.exports = SubCategory
+module.exports = SubCategory_Update
