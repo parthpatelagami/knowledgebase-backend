@@ -15,24 +15,47 @@ async function getArticle(req,res){
         if(id!=undefined){
             sql+= ` where ID=`+id
         }
-        DBConfig.query(sql, (err, results) => {
-            console.log(results)
+        const articleresult = await new Promise((resolve, reject) => {
+            DBConfig.query(sql, (err, results) => {
+                if (err) {
+                    console.error('Error:', err);
+                    reject(err);
+                } else {
+                    console.log(results);
+                    resolve(results);
+                }
+            });
+        });
+        //console.log(articleresult);
+        var sqlattachments=`select File_Name,Article_id from Attachments`;
+        if(id!=undefined){
+            sql+= ` where ID=`+id
+        }
+        const attachmentResult = await new Promise((resolve, reject) => {
+            DBConfig.query(sqlattachments, (err, attachmentResults) => {
+                if (err) {
+                    console.error('Error fetching attachments:', err);
+                    reject(err);
+                } else {
+                   // console.log(attachmentResults);
+                    resolve(attachmentResults);
+                }
+            });
+        });
+        const articlesWithAttachments = articleresult.map(article => {
+            const articleAttachments = attachmentResult.filter(attachment => attachment.Article_id === article.ID).map(attachment=>attachment.File_Name);
+            return {
+                ...article,
+                attachments: articleAttachments
+            };
+        });
 
-            if (err) {
-                console.error('Error:', err)
-                res.status(500).json({
-                    success: false,
-                    message: 'Oops! Something Went Wrong.',
-                })
-            } else {
-                res.status(200).json({
-                    success: true,
-                    message: 'Article Send Successfully',
-                    articles: results
-                })
-            }
+        
+        res.status(200).json({
+            success: true,
+            message: 'Article Send Successfully',
+            articles: articlesWithAttachments
         })
-
     }catch(error){
         console.error('Error:', error)
         res.status(500).json({
@@ -55,6 +78,7 @@ async function CreateArticle(req,res){
             Content,
             Attachments,
             Article_UUID,
+            Category_name,
             Status
             } = req.body
             DBConfig.beginTransaction()
@@ -66,12 +90,14 @@ async function CreateArticle(req,res){
             }
             const elasticSearchJSON={
                 "Content":Content,
+                "Category_name":Category_name,
                 "id":id,
                 "Name":Name,
                 "Status":parseInt(Status)
             }
 
             DBConfig.commit();
+            console.log("Elsatic Serach json",elasticSearchJSON);
             await elArticleService.addArticle(elasticSearchJSON)
             res.status(201).json({
                 success: true,
