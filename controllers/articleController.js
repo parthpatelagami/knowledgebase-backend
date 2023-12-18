@@ -71,7 +71,7 @@ async function CreateArticle(req,res){
         const {
             Name,
             Category_id,
-            SubCategory_id,
+            // SubCategory_id,
             Created_by,
             Updated_by,
             Updated_date,
@@ -82,7 +82,7 @@ async function CreateArticle(req,res){
             Status
             } = req.body
             DBConfig.beginTransaction()
-            const article = new Article(Name, Category_id, SubCategory_id, Created_by, Updated_by, Updated_date, Content,Status,Article_UUID,DBConfig);
+            const article = new Article(Name, Category_id, Created_by, Updated_by, Updated_date, Content,Status,Article_UUID,DBConfig);
             const result = await article.insert()
             const id=result.insertId;
             if(Attachments.length>0){
@@ -171,7 +171,6 @@ async function editArticle(req,res){
         const {
             Name,
             Category_id,
-            SubCategory_id,
             Created_by,
             Updated_by,
             Updated_date,
@@ -182,7 +181,7 @@ async function editArticle(req,res){
             } = req.body
             const ID=req.params.id;
             DBConfig.beginTransaction()
-            const article = new ArticleUpdate(ID,Name, Category_id, SubCategory_id, Created_by, Updated_by, Updated_date, Content,Status,DBConfig);
+            const article = new ArticleUpdate(ID,Name, Category_id, Created_by, Updated_by, Updated_date, Content,Status,DBConfig);
             const result = await article.update();
             const attaachmetresult=await editAttachment(ID,Attachments,Article_UUID,DBConfig)
             
@@ -232,5 +231,32 @@ async function editAttachment(id,attachments,Article_UUID,DBConfig){
     }
 }
 
+async function deleteAttachements(req,res) {
+    console.log(req.body)
+    const {fileName, uuid} = req.body;
+    const filePath = process.env.FILE_UPLOAD_PATH+"/"+uuid+"/"+fileName;
+    
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error('Error checking file existence:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error('Error deleting file:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+  
+      res.status(201).json({
+            success: true,
+            message: 'Done',
+        })
+    })
+});
 
-module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle}
+}
+
+
+
+module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle,deleteAttachements}

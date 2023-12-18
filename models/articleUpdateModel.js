@@ -4,7 +4,6 @@ class ArticleUpdate {
         ID,
         Name,
         Category_id,
-        SubCategory_id,
         Created_by,
         Updated_by,
         Updated_date,
@@ -15,7 +14,6 @@ class ArticleUpdate {
         this.ID=ID
         this.Name = Name
         this.Category_id = Category_id
-        this.SubCategory_id = SubCategory_id
         this.Created_by = Created_by
         this.Updated_by = Updated_by
         this.Updated_date = Updated_date
@@ -30,7 +28,6 @@ class ArticleUpdate {
             const articleData = {
                 Name : this.Name,
                 Category_id : this.Category_id,
-                SubCategory_id : this.SubCategory_id,
                 Created_by : this.Created_by,
                 Updated_by : this.Updated_by,
                 Updated_date : this.Updated_date,
