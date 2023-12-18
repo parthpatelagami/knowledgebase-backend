@@ -231,7 +231,6 @@ async function editAttachment(id,attachments,Article_UUID,DBConfig){
     }
 }
 async function deleteAttachements(req,res) {
-    console.log(req.body)
     const {fileName, uuid} = req.body;
     const filePath = process.env.FILE_UPLOAD_PATH+"/"+uuid+"/"+fileName;
 
@@ -256,5 +255,22 @@ async function deleteAttachements(req,res) {
 
 }
 
+ async function tranferFileOnEdit(req,res){
+    const {uuid,id}=req.body;
+    console.log("Tranfer File on Edit",req.body);
+    fsExtra.emptyDirSync( process.env.FILE_UPLOAD_PATH+"/"+uuid);
+    
+    const destinationFile = process.env.FILE_UPLOAD_PATH+"/"+uuid+"/"; // Replace with your actual filename
+    const sourceFile = process.env.PUBLIC_FOLDER_PATH+"/attachment_"+id;
+    const copied=await fs.cp(sourceFile, destinationFile,{ recursive: true },(err) => {
+        if (err) throw err;
+        console.log('File copied successfully!');
+    });
+    res.status(201).json({
+        success: true,
+        message: 'Done',
+    })
+ }
 
-module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle,deleteAttachements}
+
+module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle,deleteAttachements,tranferFileOnEdit}
