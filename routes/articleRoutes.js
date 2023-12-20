@@ -19,9 +19,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage})
 
-router.get('/getallarticle/:id', getArticle);
+router.post('/getallarticle/:id', getArticle);
 router.post('/create-new-article', CreateArticle);
-router.get('/getallarticle', getArticle);
+router.post('/getallarticle', getArticle);
 router.delete('/deletearticle/:id',deleteArticle);
 router.post('/upload-attachements/:uuid',upload.single('file'), uploadAttachements);
 router.post('/editarticle/:id',editArticle);
