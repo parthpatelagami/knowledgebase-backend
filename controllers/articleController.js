@@ -135,6 +135,7 @@ async function addAttachment(id,attachments,Article_UUID,DBConfig){
 
 async function deleteArticle(req,res){
     try{
+        const id=req.params.id;
         let sql=`UPDATE knowledgebase.article SET STATUS=0 WHERE ID=`+req.params.id;
         DBConfig.query(sql, (err, results) => {
             if (err) {
@@ -144,6 +145,7 @@ async function deleteArticle(req,res){
                     message: 'Oops! Something Went Wrong.',
                 })
             } else {
+                //elArticleService.deleteArticleById(parseInt(id));
                 res.status(200).json({
                     success: true,
                     message: 'Article Deleted Sucessfully',
@@ -177,14 +179,24 @@ async function editArticle(req,res){
             Content,
             Attachments,
             Article_UUID,
-            Status
+            Status,
+            Category_Name
             } = req.body
             const ID=req.params.id;
             DBConfig.beginTransaction()
             const article = new ArticleUpdate(ID,Name, Category_id, Created_by, Updated_by, Updated_date, Content,Status,DBConfig);
             const result = await article.update();
             const attaachmetresult=await editAttachment(ID,Attachments,Article_UUID,DBConfig)
-            
+            const elasticSearchJSON={
+                "Content":Content,
+                "Category_name":Category_Name,
+                "id":parseInt(ID),
+                "Name":Name,
+                "Status":parseInt(Status)
+            }
+            console.log("Edit Elatic Search JSON",elasticSearchJSON);
+            elArticleService.updateArticleById(ID,elasticSearchJSON);
+
             DBConfig.commit();
             res.status(200).json({
                 success: true,
@@ -259,13 +271,15 @@ async function deleteAttachements(req,res) {
     const {uuid,id}=req.body;
     console.log("Tranfer File on Edit",req.body);
     fsExtra.emptyDirSync( process.env.FILE_UPLOAD_PATH+"/"+uuid);
-    
     const destinationFile = process.env.FILE_UPLOAD_PATH+"/"+uuid+"/"; // Replace with your actual filename
     const sourceFile = process.env.PUBLIC_FOLDER_PATH+"/attachment_"+id;
-    const copied=await fs.cp(sourceFile, destinationFile,{ recursive: true },(err) => {
-        if (err) throw err;
-        console.log('File copied successfully!');
-    });
+    if(fs.existsSync(sourceFile)){
+        const copied=await fs.cp(sourceFile, destinationFile,{ recursive: true },(err) => {
+            if (err) throw err;
+            console.log('File copied successfully!');
+        });
+    }
+    
     res.status(201).json({
         success: true,
         message: 'Done',

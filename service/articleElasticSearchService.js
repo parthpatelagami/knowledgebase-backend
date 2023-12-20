@@ -98,6 +98,7 @@ async function updateArticleById(articleId, articledata) {
     await client.update({
       index: "article",
       id: articleId,
+      refresh: "wait_for",
       body: {
         doc: articledata,
       },
