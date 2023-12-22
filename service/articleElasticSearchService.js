@@ -91,6 +91,7 @@ async function searchArticle(content) {
   } catch (error) {
     console.error("EL - Error searching document:", error);
   }
+  return resultdata;
 }
 
 async function updateArticleById(articleId, articledata) {

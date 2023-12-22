@@ -1,5 +1,5 @@
 const express = require('express')
-const { getArticle,CreateArticle,deleteArticle,uploadAttachements, editArticle,deleteAttachements,tranferFileOnEdit } = require('../controllers/articleController')
+const { getArticle,CreateArticle,deleteArticle,uploadAttachements, editArticle,deleteAttachements,tranferFileOnEdit, searchArticle, getCategoryWiseArticleData, getArticlesData} = require('../controllers/articleController')
 require('dotenv').config()
 const fs = require('fs');
 
@@ -27,5 +27,9 @@ router.post('/upload-attachements/:uuid',upload.single('file'), uploadAttachemen
 router.post('/editarticle/:id',editArticle);
 router.post('/delete-attachements', deleteAttachements);
 router.post('/tranferfileOnEdit',tranferFileOnEdit)
+router.get('/seracharticle/:article', searchArticle);
+router.get('/getallcategorydata', getCategoryWiseArticleData);
+router.get('/getarticlesdata/:id', getArticlesData);
+
 
 module.exports = router

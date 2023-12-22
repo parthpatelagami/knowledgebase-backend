@@ -287,5 +287,172 @@ async function deleteAttachements(req,res) {
     })
  }
 
+ async function searchArticle(req, res){
 
-module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle,deleteAttachements,tranferFileOnEdit}
+    try{
+        const event = req.params.article;
+        const response = await elArticleService.searchArticle(event);
+        console.log("response: ", response);
+        if (response != undefined) {
+            res.status(200).json({
+                success: true,
+                message: 'Article Search Sucessfully',
+                articles: response
+            })
+            
+        } else {
+            //elArticleService.deleteArticleById(parseInt(id));
+            console.error('Error:', err)
+            res.status(500).json({
+                success: false,
+                message: 'Oops! Something Went Wrong.',
+            })
+        }
+
+        // let sql=`SELECT * From knowledgebase.article WHERE Name Like "${event}%"`;
+        // DBConfig.query(sql, (err, results) => {
+        //     if (err) {
+        //         console.error('Error:', err)
+        //         res.status(500).json({
+        //             success: false,
+        //             message: 'Oops! Something Went Wrong.',
+        //         })
+        //     } else {
+        //         //elArticleService.deleteArticleById(parseInt(id));
+        //         res.status(200).json({
+        //             success: true,
+        //             message: 'Article Search Sucessfully',
+        //             articles: results
+        //         })
+        //     }
+        // });
+
+    }catch(err){
+
+    }
+} 
+
+async function getCategoryWiseArticleData(req, res){
+
+    try{
+        var sql = `SELECT category_id, name FROM knowledgebase.category_mst WHERE status = 1`;       
+        const categoryresult = await new Promise((resolve, reject) => {
+            DBConfig.query(sql, (err, results) => {
+                if (err) {
+                    console.error('Error:', err);
+                    reject(err);
+                } else {
+                    console.log(results);
+                    resolve(results);
+                }
+            });
+        });
+        //console.log(articleresult);
+        var sqlarticle=`SELECT Name, Category_id, ID FROM knowledgebase.article`;
+        
+        const articlesResult = await new Promise((resolve, reject) => {
+            DBConfig.query(sqlarticle, (err, articleResults) => {
+                if (err) {
+                    console.error('Error fetching Artcles:', err);
+                    reject(err);
+                } else {
+                   // console.log(attachmentResults);
+                    resolve(articleResults);
+                }
+            });
+        });
+        const categorysWithArticle = categoryresult.map(category => {
+            const articles = articlesResult.filter(article => article.Category_id === category.category_id)
+            .map((article, index) => {
+                return (
+                    {
+                        name:article.Name,
+                        id:index+1,
+                        articleid: article.ID
+                    })
+            });
+            return {
+                ...category,
+                article: articles
+            };
+        });
+
+        
+        res.status(200).json({
+            success: true,
+            message: 'Article With Category Send Successfully',
+            articles: categorysWithArticle
+        })
+    }catch(error){
+        console.error('Error:', error)
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        })
+    }
+}
+
+async function getArticlesData(req, res){
+    const id = req.params.id
+    try{
+        var sql = `SELECT name, category_id FROM knowledgebase.category_mst Where category_id=${id}`;
+       
+        const categoryresult = await new Promise((resolve, reject) => {
+            DBConfig.query(sql, (err, results) => {
+                if (err) {
+                    console.error('Error:', err);
+                    reject(err);
+                } else {
+                    console.log(results);
+                    resolve(results);
+                }
+            });
+        });
+        //console.log(articleresult);
+        var sqlarticle=`SELECT * FROM knowledgebase.article`;
+        
+        const articlesResult = await new Promise((resolve, reject) => {
+            DBConfig.query(sqlarticle, (err, articlesResults) => {
+                if (err) {
+                    console.error('Error fetching Artcles:', err);
+                    reject(err);
+                } else {
+                   // console.log(attachmentResults);
+                    resolve(articlesResults);
+                }
+            });
+        });
+        const categoryWithArticles = categoryresult.map(category => {
+            const articles = articlesResult.filter(article => 
+                article.Category_id === category.category_id)
+                .map((article, index)=> {
+                    return ({
+                        name: article.Name,
+                        id : index+1,
+                        content: article.Content,
+                        updated_date: article.Updated_date,
+                        article_id: article.ID   
+                })})
+            return {
+                ...category,
+                articledata: articles
+            };
+        });
+
+        
+        res.status(200).json({
+            success: true,
+            message: 'Articles Data Send Successfully',
+            articlesdata: categoryWithArticles
+        })
+    }catch(error){
+        console.error('Error:', error)
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        })
+    }
+}
+
+
+module.exports={getArticle,CreateArticle,deleteArticle,uploadAttachements,editArticle,deleteAttachements,tranferFileOnEdit, searchArticle, getCategoryWiseArticleData, getArticlesData}
