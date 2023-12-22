@@ -91,6 +91,7 @@ async function CreateArticle(req,res){
             const elasticSearchJSON={
                 "Content":Content,
                 "Category_name":Category_Name,
+                "Category_id":Category_id,
                 "id":id,
                 "Name":Name,
                 "Status":parseInt(Status)
